@@ -71,6 +71,23 @@ namespace EmployeeManager.Mvc
             return View(model);
         }
 
+        [ActionName("Delete")]
+        public IActionResult ConfirmDelete(int id)
+        {
+            Employee model = db.Employees.Find(id);
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Delete(int employeeId)
+        {
+            Employee model = db.Employees.Find(employeeId);
+            db.Employees.Remove(model);
+            db.SaveChanges();
+            TempData["Message"] = "Employee deleted succesfully";
+            return RedirectToAction("List");
+        }
+
         public void FillCountries()
         {
             List<SelectListItem> countries =
