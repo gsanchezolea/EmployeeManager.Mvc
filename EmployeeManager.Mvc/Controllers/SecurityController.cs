@@ -55,8 +55,10 @@ namespace EmployeeManager.Mvc.Controllers
                 else
                 {
                     ModelState.AddModelError("", "Invalid user details");
-                }
+                }                
             }
+            return View(obj);
+
         }
 
         public IActionResult SignIn()
