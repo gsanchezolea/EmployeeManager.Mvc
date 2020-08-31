@@ -63,13 +63,27 @@ namespace EmployeeManager.Mvc.Controllers
 
         public IActionResult SignIn()
         {
-
+            return View();
         }
 
         [HttpPost]
         public IActionResult SignIn(SignIn obj)
         {
-
+            if (ModelState.IsValid)
+            {
+                var result = signInManager.PasswordSignInAsync(
+                    obj.UserName, obj.Password,
+                    obj.RememberMe, false).Result;
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("List", "EmployeeManager");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Invalid user details");
+                }
+            }
+            return View(obj);
         }
 
         [HttpPost]
