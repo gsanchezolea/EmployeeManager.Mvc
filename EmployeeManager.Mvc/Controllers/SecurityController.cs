@@ -89,7 +89,13 @@ namespace EmployeeManager.Mvc.Controllers
         [HttpPost]
         public IActionResult SignOut()
         {
+            signInManager.SignOutAsync().Wait();
+            return RedirectToAction("SignIn", "Security");
+        }
 
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }
