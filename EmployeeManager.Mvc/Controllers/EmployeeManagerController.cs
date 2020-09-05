@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EmployeeManager.Mvc.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EmployeeManager.Mvc
 {
+
+    [Authorize(Roles = "Manager")]
     public class EmployeeManagerController : Controller
     {
         private AppDbContext db = null;
@@ -29,6 +32,7 @@ namespace EmployeeManager.Mvc
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Insert(Employee model)
         {
             FillCountries();
@@ -59,6 +63,7 @@ namespace EmployeeManager.Mvc
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Update(Employee model)
         {
             FillCountries();
@@ -79,6 +84,7 @@ namespace EmployeeManager.Mvc
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(int employeeId)
         {
             Employee model = db.Employees.Find(employeeId);
@@ -88,17 +94,12 @@ namespace EmployeeManager.Mvc
             return RedirectToAction("List");
         }
 
-        public void FillCountries()
+        private void FillCountries()
         {
-            List<SelectListItem> countries =
-                (from c in db.Countries
-                 orderby c.Name ascending
-                 select new SelectListItem()
-                 {
-                     Text = c.Name,
-                     Value = c.Name
-                 })
-                 .ToList();
+            List<SelectListItem> countries = (from c in db.Countries
+                                              orderby c.Name ascending
+                                              select new SelectListItem(){ Text = c.Name, Value = c.Name }).ToList();
+
             ViewBag.Countries = countries;
         }
     }
